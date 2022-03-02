@@ -38,6 +38,14 @@ main {
   aspect-ratio: 8.5 / 11;
 }
 
+.resume-block {
+  margin-bottom: 24px;
+}
+
+.resume-sub-block {
+  margin-bottom: 24px;
+}
+
 .editor-window {
   padding: 24px;
   flex: 1 0 40%;
@@ -53,7 +61,11 @@ main {
   margin-bottom: 1rem;
 }
 
-form > input {
+form {
+  margin-bottom: 24px;
+}
+
+form > input, textarea {
   @apply
     mb-4
     shadow
@@ -65,4 +77,18 @@ form > input {
     px-3
     text-gray-700
     leading-tight
+}
+
+button {
+  @apply
+  bg-blue-500
+  hover:bg-blue-700
+  text-white
+  font-bold
+  py-2 px-4
+  rounded
+}
+
+textarea {
+  height: 100px;
 }
