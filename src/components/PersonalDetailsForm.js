@@ -17,26 +17,31 @@ class PersonalDetailsForm extends React.Component {
           id="firstName"
           type="text"
           placeholder="First Name"
+          value={this.props.content.firstName}
         />
         <input
           id="lastName"
           type="text"
           placeholder="Last Name"
+          value={this.props.content.lastName}
         />
         <input
           id="title"
           type="text"
           placeholder="Title"
+          value={this.props.content.title}
         />
         <input
-          id="website"
+          id="email"
           type="text"
-          placeholder="Website"
+          placeholder="Email"
+          value={this.props.content.email}
         />
         <input
           id="phone"
           type="text"
           placeholder="Phone Number"
+          value={this.props.content.phone}
         />
       </form>
     )
