@@ -1,8 +1,5 @@
-import React from 'react';
-
-class PersonalDetails extends React.Component {
-  render() {
-    const { firstName, lastName, title, email, phone } = this.props.content; // destructure props
+function PersonalDetails(props) {
+    const { firstName, lastName, title, email, phone } = props.content; // destructure props
     return (
       <div>
         <div>{firstName} {lastName}</div>
@@ -11,7 +8,6 @@ class PersonalDetails extends React.Component {
         <div>{phone}</div>
       </div>
     );
-  }
 }
 
 export default PersonalDetails;
