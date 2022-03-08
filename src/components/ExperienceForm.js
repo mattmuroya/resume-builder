@@ -23,7 +23,7 @@ function ExperienceForm(props) {
         id="title"
         type="text"
         placeholder="Job Title"
-        value={title}
+        defaultValue={title}
       />
       <input
         id="employer"

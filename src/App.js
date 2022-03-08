@@ -1,134 +1,114 @@
-import React from 'react';
+import {useRef, useState, useEffect} from 'react';
 import './App.css';
-import ReactToPrint from 'react-to-print';
+import { useReactToPrint } from 'react-to-print';
 import PersonalDetails from './components/PersonalDetails';
 import PersonalDetailsForm from './components/PersonalDetailsForm';
 import Experience from './components/Experience';
 import ExperienceForm from './components/ExperienceForm';
 
-class Resume extends React.Component {
-  renderExperience() {
+function Resume(props) {
+
+  function renderExperience() {
     const list = [];
-    for (let i = 0; i < this.props.experience.length; i++) {
+    for (let i = 0; i < props.experience.length; i++) {
       list.push(
         <div key={i} >
-          <Experience content={this.props.experience[i]}/>
+          <Experience content={props.experience[i]}/>
         </div>
       )
     }
     return list;
   }
-  render() {
-    return (
-      <div>
-        <div className='resume'>
-          <div ref={el => (this.componentRef = el)}>
-            <div className="resume-block">
-              <PersonalDetails content={this.props.personalDetails} />
-            </div>
-            <div className="resume-block">
-              {this.renderExperience()}
-            </div>
+
+  const componentRef = useRef(); // not sure exactly what this does...
+
+  const handlePrint = useReactToPrint({ // ...see react-to-print doc lol
+    content: () => componentRef.current,
+  })
+
+  return (
+    <div>
+      <div className='resume'>
+        <div ref={componentRef}>
+          <div className="resume-block">
+            <PersonalDetails content={props.personalDetails} />
+          </div>
+          <div className="resume-block">
+            {renderExperience()}
           </div>
         </div>
-        <ReactToPrint
-          trigger={() => {
-            // NOTE: could just as easily return <SomeComponent />. Do NOT pass an `onClick` prop
-            // to the root node of the returned component as it will be overwritten.
-            return <a href="#" className="text-blue-700">Print my resume!</a>;
-          }}
-          content={() => this.componentRef}
-        />
       </div>
-    );
-  }
+      <button onClick={handlePrint}>Print this out!</button>
+    </div>
+  );
 }
 
-class NewExperienceBtn extends React.Component {
-
-  render() {
-    return (
-      <button onClick={this.props.clickFn}>Add More Experience</button>
-    )
-  }
+function NewExperienceBtn({ clickFn }) { // destructured props
+  return (
+    <button onClick={clickFn}>Add More Experience</button>
+  )
 }
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      personalDetails: {
-        firstName: 'Matt',
-        lastName: 'Muroya',
-        title: 'Software Developer',
-        email: 'hello@mattmuroya.com',
-        phone: '123-456-7890',
-      },
-      experience: [
-        {
-          title: 'Software Developer',
-          employer: 'Google',
-          details: 'Developed software for Google.',
-          start: '1/1/21',
-          end: '12/31/21'
-        },
-        {
-          title: 'QA Engineer',
-          employer: 'Amazon',
-          details: 'Performed QA for Amazon.',
-          start: '1/1/20',
-          end: '12/31/20'
-        }
-      ]
+function App() {
+
+  const [personalDetails, setPersonalDetails] = useState({ // object
+    firstName: 'Matt',
+    lastName: 'Muroya',
+    title: 'Software Developer',
+    email: 'hello@mattmuroya.com',
+    phone: '123-456-7890',
+  });
+
+  const [experience, setExperience] = useState([ // array of objexts
+    {
+      title: 'Software Developer',
+      employer: 'Google',
+      details: 'Developed software for Google.',
+      start: '1/1/21',
+      end: '12/31/21'
+    },
+    {
+      title: 'QA Engineer',
+      employer: 'Amazon',
+      details: 'Performed QA for Amazon.',
+      start: '1/1/20',
+      end: '12/31/20'
     }
-    this.updatePersonalDetails = this.updatePersonalDetails.bind(this);
-    this.updateExperience = this.updateExperience.bind(this);
-    this.createNewExperienceForm = this.createNewExperienceForm.bind(this);
-    this.deleteExperience = this.deleteExperience.bind(this);
-  }
+  ])
 
-  updatePersonalDetails(id, value) {
-    const newDetails = this.state.personalDetails;
+  function updatePersonalDetails(id, value) {
+    const newDetails = personalDetails;
     newDetails[id] = value;
-    this.setState({
-      personalDetails: newDetails
-    })
+    setPersonalDetails({...newDetails});
   }
 
-  updateExperience(id, value, index) {
-    const newDetails = this.state.experience;
+  function updateExperience(id, value, index) {
+    const newDetails = experience;
     newDetails[index][id] = value;
-    this.setState({
-      experience: newDetails
-    })
+    setExperience([...newDetails])
   }
 
-  deleteExperience(index) {
-    // console.log(this.state.experience);
-    const newExperienceState = this.state.experience;
+  function deleteExperience(index) {
+    const newExperienceState = experience;
     newExperienceState.splice(index, 1);
-    this.setState({
-      experience: newExperienceState
-    })
+    setExperience([...newExperienceState]);
   }
 
-  renderExperienceForms() {
+  function renderExperienceForms() {
     const list = [];
-    for (let i = 0; i < this.state.experience.length; i++) {
+    for (let i = 0; i < experience.length; i++) {
       list.push(
         <div key={i} >
           <h4 className="mb-4">Job {i+1}</h4>
-          <ExperienceForm content={this.state.experience[i]} onFormChange={this.updateExperience} index={i} onDelete={this.deleteExperience}/>
+          <ExperienceForm content={experience[i]} onFormChange={updateExperience} index={i} onDelete={deleteExperience}/>
         </div>
       )
     }
     return list;
   }
 
-  
-
-  createNewExperienceForm() {
-    const newExperienceState = this.state.experience;
+  function createNewExperienceForm() {
+    const newExperienceState = experience;
     newExperienceState.push({
       title: '',
       employer: '',
@@ -136,31 +116,31 @@ class App extends React.Component {
       start: '',
       end: ''
     });
-    this.setState({
-      experience: newExperienceState
-    });
+    setExperience([...newExperienceState]);
   }
 
-  render() {
-    return (
-      <main className="main">
-        <div className="editor-window">
-          <div className="editor-section">
-            <h3 className="form-heading">Personal Details</h3>
-            <PersonalDetailsForm content={this.state.personalDetails} onFormChange={this.updatePersonalDetails} />
-          </div>
-          <div className="editor-section">
-            <h3 className="form-heading">Experience</h3>
-            {this.renderExperienceForms()}
-            <NewExperienceBtn clickFn={this.createNewExperienceForm} />
-          </div>
+  // useEffect(() => {
+  //   console.log(personalDetails);
+  // })
+
+  return (
+    <main className="main">
+      <div className="editor-window">
+        <div className="editor-section">
+          <h3 className="form-heading">Personal Details</h3>
+          <PersonalDetailsForm content={personalDetails} onFormChange={updatePersonalDetails} />
         </div>
-        <div className="resume-window">
-          <Resume personalDetails={this.state.personalDetails} experience={this.state.experience} />
+        <div className="editor-section">
+          <h3 className="form-heading">Experience</h3>
+          {renderExperienceForms()}
+          <NewExperienceBtn clickFn={createNewExperienceForm} />
         </div>
-      </main>
-    );
-  }
+      </div>
+      <div className="resume-window">
+        <Resume personalDetails={personalDetails} experience={experience} />
+      </div>
+    </main>
+  );
 }
 
 export default App;

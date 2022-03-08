@@ -12,31 +12,31 @@ function PersonalDetailsForm(props) {
         id="firstName"
         type="text"
         placeholder="First Name"
-        value={firstName}
+        defaultValue={firstName}
       />
       <input
         id="lastName"
         type="text"
         placeholder="Last Name"
-        value={lastName}
+        defaultValue={lastName}
       />
       <input
         id="title"
         type="text"
         placeholder="Title"
-        value={title}
+        defaultValue={title}
       />
       <input
         id="email"
         type="text"
         placeholder="Email"
-        value={email}
+        defaultValue={email}
       />
       <input
         id="phone"
         type="text"
         placeholder="Phone Number"
-        value={phone}
+        defaultValue={phone}
       />
     </form>
   )
